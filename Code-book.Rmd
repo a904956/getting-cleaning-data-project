@@ -1,0 +1,241 @@
+---
+title: "Code-book"
+output: html_document
+---
+
+
+Code Book
+
+This code book summarizes the resulting data fields in tidy.txt.
+Identifiers
+
+    subject - id of subject
+    activity_code - Activity type 
+
+
+Activity Labels
+
+    1 - WALKING: subject was WALKING during the test
+    2 - WALKING_UPSTAIRS: subject was WALKING_UPSTAIRS during the test
+    3 - WALKING_DOWNSTAIRS: subject was WALKING_DOWNSTAIRS during the test
+    4 - SITTING: subject was SITTING during the test
+    5 - STANDING: subject was STANDING during the test
+    6 - LAYING: subject was LAYING down during the test
+    
+Variables (Measurements)
+
+    tBodyAccMeanX
+    tBodyAccMeanY
+    tBodyAccMeanZ
+    tBodyAccStdX
+    tBodyAccStdY
+    tBodyAccStdZ
+    tGravityAccMeanX
+    tGravityAccMeanY
+    tGravityAccMeanZ
+    tGravityAccStdX
+    tGravityAccStdY
+    tGravityAccStdZ
+    tBodyAccJerkMeanX
+    tBodyAccJerkMeanY
+    tBodyAccJerkMeanZ
+    tBodyAccJerkStdX
+    tBodyAccJerkStdY
+    tBodyAccJerkStdZ
+    tBodyGyroMeanX
+    tBodyGyroMeanY
+    tBodyGyroMeanZ
+    tBodyGyroStdX
+    tBodyGyroStdY
+    tBodyGyroStdZ
+    tBodyGyroJerkMeanX
+    tBodyGyroJerkMeanY
+    tBodyGyroJerkMeanZ
+    tBodyGyroJerkStdX
+    tBodyGyroJerkStdY
+    tBodyGyroJerkStdZ
+    tBodyAccMagMean
+    tBodyAccMagStd
+    tGravityAccMagMean
+    tGravityAccMagStd
+    tBodyAccJerkMagMean
+    tBodyAccJerkMagStd
+    tBodyGyroMagMean
+    tBodyGyroMagStd
+    tBodyGyroJerkMagMean
+    tBodyGyroJerkMagStd
+    fBodyAccMeanX
+    fBodyAccMeanY
+    fBodyAccMeanZ
+    fBodyAccStdX
+    fBodyAccStdY
+    fBodyAccStdZ
+    fBodyAccMeanFreqX
+    fBodyAccMeanFreqY
+    fBodyAccMeanFreqZ
+    fBodyAccJerkMeanX
+    fBodyAccJerkMeanY
+    fBodyAccJerkMeanZ
+    fBodyAccJerkStdX
+    fBodyAccJerkStdY
+    fBodyAccJerkStdZ
+    fBodyAccJerkMeanFreqX
+    fBodyAccJerkMeanFreqY
+    fBodyAccJerkMeanFreqZ
+    fBodyGyroMeanX
+    fBodyGyroMeanY
+    fBodyGyroMeanZ
+    fBodyGyroStdX
+    fBodyGyroStdY
+    fBodyGyroStdZ
+    fBodyGyroMeanFreqX
+    fBodyGyroMeanFreqY
+    fBodyGyroMeanFreqZ
+    fBodyAccMagMean
+    fBodyAccMagStd
+    fBodyAccMagMeanFreq
+    fBodyBodyAccJerkMagMean
+    fBodyBodyAccJerkMagStd
+    fBodyBodyAccJerkMagMeanFreq
+    fBodyBodyGyroMagMean
+    fBodyBodyGyroMagStd
+    fBodyBodyGyroMagMeanFreq
+    fBodyBodyGyroJerkMagMean
+    fBodyBodyGyroJerkMagStd
+    fBodyBodyGyroJerkMagMeanFreq
+
+
+Work:
+
+The purpose of this project is to demonstrate your ability to collect, work with, and clean a data set.
+Review criteria
+
+    - The submitted data set is tidy.
+    - The Github repo contains the required scripts.
+    - GitHub contains a code book that modifies and updates the available codebooks with the data to indicate all the variables and
+      summaries calculated, along with units, and any other relevant information.
+    - The README that explains the analysis files is clear and understandable.
+    - The work submitted for this project is the work of the student who submitted it.
+
+Getting and Cleaning Data Course Project
+
+The purpose of this project is to demonstrate your ability to collect, work with, and clean a data set. The goal is to prepare tidy data that can be used for later analysis. You will be graded by your peers on a series of yes/no questions related to the project. You will be required to submit: 
+
+    - 1) a tidy data set as described below, 
+    - 2) a link to a Github repository with your script for performing the analysis, and 
+    - 3) a code book that describes the variables, the data, and any transformations or work that you performed to clean up the data called
+         CodeBook.md. 
+         
+         You should also include a README.md in the repo with your scripts. This repo explains how all of the scripts work and how they are 
+         connected.
+
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained:
+
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+Here are the data for the project:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+You should create one R script called run_analysis.R that does the following.
+
+    - Merges the training and the test sets to create one data set.
+    - Extracts only the measurements on the mean and standard deviation for each measurement.
+    - Uses descriptive activity names to name the activities in the data set
+    - Appropriately labels the data set with descriptive variable names.
+    - From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each
+      subject.
+
+Good luck!
+
+```{r}
+library(dplyr)
+
+# Downloading & Unzipping Folder
+url = "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+filename = "dataset.zip"
+download.file(url,filename,method="curl")
+unzip(filename)
+```
+
+```{r}
+# Reading Activity Labels & Features 
+activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt")
+features <- read.table("UCI HAR Dataset/features.txt")
+
+# Reading training set
+subject_train <- read.table("UCI HAR Dataset/train/subject_train.txt")
+colnames(subject_train) = features$V2
+
+x_train <- read.table("UCI HAR Dataset/train/X_train.txt")
+colnames(x_train) = features$V2
+
+y_train <- read.table("UCI HAR Dataset/train/y_train.txt")
+colnames(y_train) = c("activity_code")
+
+# Reading test set
+subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt")
+colnames(subject_test) = c("subject")
+
+x_test <- read.table("UCI HAR Dataset/test/X_test.txt")
+colnames(x_test) = features$V2
+
+y_test <- read.table("UCI HAR Dataset/test/y_test.txt")
+colnames(y_test) = c("activity_code")
+```
+
+
+1. Merges the training and the test sets to create one data set.
+
+```{r}
+x = rbind(x_train,x_test)
+y = rbind(y_train,y_test)
+subject = rbind(subject_train,subject_test)
+
+df = cbind(subject,y,x)
+head(df)
+```
+
+2. Extracts only the measurements on the mean and standard deviation for each measurement.
+```{r}
+df2 <- df[,grep("std\\(\\)|mean\\(\\)|activity_code|subject", colnames(df), value=TRUE)] 
+head(df2)
+```
+
+- Uses descriptive activity names to name the activities in the data set
+```{r}
+df2$activity_description = factor(df2$activity_code, levels = activity_labels[,1], labels = activity_labels[,2])
+head(df2)
+```
+
+- Appropriately labels the data set with descriptive variable names.
+```{r}
+names(df2)<-gsub("Acc", "Accelerometer", names(df2))
+names(df2)<-gsub("Gyro", "Gyroscope", names(df2))
+names(df2)<-gsub("BodyBody", "Body", names(df2))
+names(df2)<-gsub("Mag", "Magnitude", names(df2))
+names(df2)<-gsub("^t", "Time", names(df2))
+names(df2)<-gsub("^f", "Frequency", names(df2))
+names(df2)<-gsub("tBody", "timeBody", names(df2))
+names(df2)<-gsub("-mean()", "Mean", names(df2), ignore.case = TRUE)
+names(df2)<-gsub("-std()", "Std", names(df2), ignore.case = TRUE)
+names(df2)<-gsub("-freq()", "Freq", names(df2), ignore.case = TRUE)
+names(df2)<-gsub("[-()]", "", names(df2))
+head(df2)
+```
+
+- From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each
+  subject.
+  
+```{r}
+final_df <- df2 %>%
+  group_by(subject, activity_code) %>%
+  summarise_all(funs(mean))
+  
+head(final_df)
+write.table(final_df, "final_df.txt", row.name=FALSE)
+```
+
+  
+
+
